@@ -4,8 +4,14 @@ on: pull_request
 
 jobs:
   test_action:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     name: Test Action
     steps:
-      - name: First step
-        run: echo First step
+      - name: Download SDK
+        run: Invoke-WebRequest -URI https://go.microsoft.com/fwlink/p/?LinkId=323507 -OutFile ./sdksetup.exe
+      - name: Install SDK
+        run: powershell ./sdksetup.exe /features + /ceip off /q /norestart /l ./log.log | Out-Null
+      - name: Upload logs
+        uses: actions/upload-artifact@v3
+        with:
+          path: ./log.log
